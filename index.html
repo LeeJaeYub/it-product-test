@@ -273,15 +273,6 @@
             .main-nav a{margin-left:18px;color:var(--notice-color);text-decoration:none;font-weight:700}
             .footer{max-width:820px;margin:40px auto 24px;padding:12px;color:var(--notice-color);font-size:13px;text-align:center}
 
-            /* Modal (contact) */
-            .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:10000}
-            .modal[aria-hidden="false"]{display:flex}
-            .modal-content{background:var(--card-bg);padding:20px;border-radius:12px;width:min(520px,92%);box-shadow:0 10px 30px rgba(0,0,0,0.15);position:relative}
-            .modal-close{position:absolute;right:12px;top:10px;border:none;background:transparent;font-size:22px;cursor:pointer}
-            .modal h3{margin-top:0}
-            .modal form input,.modal form textarea{width:100%;padding:10px;margin-bottom:10px;border:1px solid var(--ball-bg);border-radius:8px;background:var(--bg-color);color:var(--text-color)}
-            .modal form button{width:100%;padding:12px;background:var(--button-bg);color:#fff;border:none;border-radius:10px;font-weight:700}
-
             /* FAQ */
             .faq{margin-top:22px;border-top:1px solid var(--ball-bg);padding-top:18px}
             .faq h3{margin:0 0 8px;font-size:15px;color:var(--text-color)}
@@ -299,7 +290,7 @@
         <nav class="main-nav">
             <a href="/about.html">About</a>
             <a href="/privacy.html">Privacy</a>
-            <a href="#" onclick="openContactModal();return false;">Contact</a>
+            <a href="#contact" onclick="document.getElementById('contact-form').scrollIntoView({behavior:'smooth'});return false;">Contact</a>
         </nav>
     </div>
 </header>
@@ -311,7 +302,7 @@
         <div class="icon">🍀</div>
         <h1>오늘의 행운 번호</h1>
         <div class="description">
-            지금 바로 행운 번호 6개를 생성해 보세요 — 재미로 즐기는 서비스입니다.
+            하루를 가볍게 시작하세요 — 버튼 한 번으로 6개의 행운 번호를 빠르게 확인할 수 있습니다.
         </div>
 
         <div class="numbers" id="numbers"></div>
@@ -323,6 +314,17 @@
 
         <div class="notice">재미로 즐겨주세요 :)</div>
 
+        <div class="contact-form" id="contact">
+            <h3>제휴 문의</h3>
+            <form id="contact-form" action="https://formspree.io/f/mqpzzkrp" method="POST">
+                <input type="text" name="name" placeholder="이름" required>
+                            <input type="email" name="_replyto" placeholder="이메일" required>
+                <textarea name="message" placeholder="문의 내용" required></textarea>
+                            <input type="hidden" name="_subject" value="Website contact">
+                            <button type="submit">보내기</button>
+                            <div id="contact-success" style="display:none;margin-top:10px;color:var(--button-bg);font-weight:700;">메시지 전송 완료 — 확인 후 회신드리겠습니다.</div>
+                        </form>
+        </div>
 
         <div class="faq" aria-label="자주 묻는 질문">
             <h3>자주 묻는 질문</h3>
@@ -441,74 +443,32 @@
     }
 
 
-<!-- Contact modal -->
-<div id="contact-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
-  <div class="modal-content" role="document">
-    <button class="modal-close" aria-label="Close" onclick="closeContactModal()">×</button>
-    <h3>제휴 문의</h3>
-    <form id="contact-form" action="https://formspree.io/f/mqpzzkrp" method="POST">
-      <input type="text" name="name" placeholder="이름" required>
-      <input type="email" name="_replyto" placeholder="이메일" required>
-      <textarea name="message" placeholder="문의 내용" required></textarea>
-      <input type="hidden" name="_subject" value="Website contact">
-      <button type="submit">보내기</button>
-      <div id="contact-success" style="display:none;margin-top:10px;color:var(--button-bg);font-weight:700;">메시지 전송 완료 — 확인 후 회신드리겠습니다.</div>
-    </form>
-  </div>
-</div>
-
-<script>
-// Modal open/close
-function openContactModal(){
-  const m = document.getElementById('contact-modal');
-  m.setAttribute('aria-hidden','false');
-  document.body.style.overflow = 'hidden';
-  setTimeout(()=>{ const first = m.querySelector('[name="name"]'); if(first) first.focus(); }, 80);
-}
-function closeContactModal(){
-  const m = document.getElementById('contact-modal');
-  m.setAttribute('aria-hidden','true');
-  document.body.style.overflow = '';
-}
-// Close on backdrop click
-document.addEventListener('click', function(e){
-  const m = document.getElementById('contact-modal');
-  if (!m) return;
-  if (m.getAttribute('aria-hidden') === 'false' && e.target === m) closeContactModal();
-});
-// Close on Escape
-document.addEventListener('keydown', function(e){ if(e.key === 'Escape') { const m = document.getElementById('contact-modal'); if(m && m.getAttribute('aria-hidden')==='false') closeContactModal(); }});
-
-// Contact form (async) — attach after modal exists
-(function(){
-  const form = document.getElementById('contact-form');
-  if (!form) return;
-  form.addEventListener('submit', async function(e){
+// Contact form (async) — Formspree
+document.getElementById('contact-form').addEventListener('submit', async function(e){
     e.preventDefault();
+    const form = e.target;
     const btn = form.querySelector('button[type="submit"]');
     const formData = new FormData(form);
     btn.disabled = true; btn.textContent = '전송 중...';
     try{
-      const res = await fetch(form.action || 'https://formspree.io/f/mqpzzkrp', {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      });
-      if (res && res.ok) {
-        form.reset();
-        const s = document.getElementById('contact-success'); if(s) s.style.display = 'block';
-        closeContactModal();
-      } else {
-        const json = await (res.json().catch(()=>({}))); 
-        alert('전송 실패: ' + (json.error || '서버 오류'));
-      }
+    const res = await fetch(form.action || 'https://formspree.io/f/mqpzzkrp', {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+            form.reset();
+            document.getElementById('contact-success').style.display = 'block';
+        } else {
+            const json = await res.json().catch(()=>({}));
+            alert('전송 실패: ' + (json.error || '서버 오류'));
+        }
     } catch(err){
-      alert('네트워크 오류: 다시 시도해 주세요.');
+        alert('네트워크 오류: 다시 시도해 주세요.');
     } finally{
-      btn.disabled = false; btn.textContent = '보내기';
+        btn.disabled = false; btn.textContent = '보내기';
     }
-  });
-})();
+});
 
 </script>
 
