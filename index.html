@@ -151,8 +151,9 @@
         .ball.range-3 { background-color: #ff5a5f; } /* 21-30: 빨강 */
         .ball.range-4 { background-color: #8b95a1; } /* 31-40: 회색 */
         .ball.range-5 { background-color: #00c471; } /* 41-45: 초록 */
+                .ball.bonus { background: #ffc857; color: #191f28; width:44px; height:44px; font-size:15px; }
 
-        @keyframes numberAppear {
+                @keyframes numberAppear {
             from { opacity: 0; transform: translateY(12px) scale(0.9); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
@@ -309,6 +310,7 @@
         </div>
 
         <div class="numbers" id="numbers"></div>
+        <div class="bonus" id="bonus" aria-hidden="true" style="margin-top:12px;display:flex;justify-content:center;gap:8px"></div>
         <div class="message" id="message"></div>
 
         <button class="luck-button" onclick="generateLotto()">
@@ -379,7 +381,9 @@
         for (let i = 1; i <= 45; i++) numbers.push(i);
         numbers.sort(() => Math.random() - 0.5);
         const lotto = numbers.slice(0, 6).sort((a, b) => a - b);
+        const bonus = numbers[6]; // next random number as bonus
 
+        // render main balls
         lotto.forEach(number => {
             const ball = document.createElement("div");
             ball.className = "ball";
@@ -394,6 +398,24 @@
             ball.textContent = number;
             numbersElement.appendChild(ball);
         });
+
+        // render bonus
+        const bonusContainer = document.getElementById('bonus');
+        if (bonusContainer) {
+            bonusContainer.innerHTML = '';
+            const label = document.createElement('div');
+            label.textContent = '보너스';
+            label.style.color = 'var(--notice-color)';
+            label.style.fontSize = '13px';
+            label.style.alignSelf = 'center';
+            label.style.marginRight = '6px';
+            const b = document.createElement('div');
+            b.className = 'ball bonus';
+            b.textContent = bonus;
+            bonusContainer.appendChild(label);
+            bonusContainer.appendChild(b);
+            bonusContainer.setAttribute('aria-hidden','false');
+        }
 
         createConfetti();
         playFanfare();
