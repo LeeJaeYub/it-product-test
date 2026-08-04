@@ -7,20 +7,40 @@
     <title>오늘의 행운 번호</title>
 
     <style>
+        :root {
+            --bg-color: #f5f6f8;
+            --text-color: #191f28;
+            --card-bg: #ffffff;
+            --icon-bg: #e8f3ff;
+            --ball-bg: #f2f4f6;
+            --ball-text: #191f28;
+            --button-bg: #3182f6;
+            --button-hover: #2275e9;
+            --notice-color: #b0b8c1;
+        }
+
+        body.dark-mode {
+            --bg-color: #191f28;
+            --text-color: #f5f6f8;
+            --card-bg: #2b333e;
+            --icon-bg: #3c4a5d;
+            --ball-bg: #3c4a5d;
+            --ball-text: #ffffff;
+            --button-bg: #3182f6;
+            --button-hover: #2275e9;
+            --notice-color: #8b95a1;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            background: #f5f6f8;
-            color: #191f28;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                "Noto Sans KR",
-                sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* 전체 화면 */
@@ -30,17 +50,37 @@
             justify-content: center;
             align-items: center;
             padding: 24px;
+            position: relative;
+        }
+
+        /* 다크모드 버튼 */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--ball-bg);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: background 0.3s;
         }
 
         /* 메인 카드 */
         .card {
             width: 100%;
             max-width: 520px;
-            background: #ffffff;
+            background: var(--card-bg);
             border-radius: 28px;
             padding: 42px 32px 34px;
-            box-shadow:
-                0 4px 20px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            transition: background 0.3s;
         }
 
         /* 상단 아이콘 */
@@ -50,12 +90,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-
-            background: #e8f3ff;
+            background: var(--icon-bg);
             border-radius: 18px;
-
             font-size: 27px;
             margin-bottom: 24px;
+            transition: background 0.3s;
         }
 
         /* 제목 */
@@ -69,7 +108,7 @@
 
         .description {
             margin-top: 12px;
-            color: #8b95a1;
+            color: var(--notice-color);
             font-size: 16px;
             line-height: 1.6;
             letter-spacing: -0.3px;
@@ -81,7 +120,6 @@
             justify-content: center;
             gap: 10px;
             flex-wrap: wrap;
-
             margin-top: 38px;
             min-height: 62px;
         }
@@ -89,69 +127,31 @@
         .ball {
             width: 58px;
             height: 58px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             border-radius: 18px;
-
-            background: #f2f4f6;
-            color: #191f28;
-
+            background: var(--ball-bg);
+            color: var(--ball-text);
             font-size: 21px;
             font-weight: 800;
-
             animation: numberAppear 0.45s ease both;
-        }
-
-        .ball:nth-child(1) {
-            animation-delay: 0.05s;
-        }
-
-        .ball:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .ball:nth-child(3) {
-            animation-delay: 0.15s;
-        }
-
-        .ball:nth-child(4) {
-            animation-delay: 0.2s;
-        }
-
-        .ball:nth-child(5) {
-            animation-delay: 0.25s;
-        }
-
-        .ball:nth-child(6) {
-            animation-delay: 0.3s;
+            transition: background 0.3s, color 0.3s;
         }
 
         @keyframes numberAppear {
-            from {
-                opacity: 0;
-                transform: translateY(12px) scale(0.9);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(12px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         /* 결과 메시지 */
         .message {
             min-height: 30px;
             margin-top: 24px;
-
             text-align: center;
-
             color: #3182f6;
             font-size: 18px;
             font-weight: 700;
-
             opacity: 0;
         }
 
@@ -160,42 +160,27 @@
         }
 
         @keyframes messageAppear {
-            0% {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* 버튼 */
         .luck-button {
             width: 100%;
             height: 58px;
-
             margin-top: 30px;
-
             border: none;
             border-radius: 16px;
-
-            background: #3182f6;
+            background: var(--button-bg);
             color: white;
-
             font-size: 17px;
             font-weight: 700;
-
             cursor: pointer;
-
-            transition:
-                transform 0.15s ease,
-                background 0.15s ease;
+            transition: transform 0.15s ease, background 0.15s ease;
         }
 
         .luck-button:hover {
-            background: #2275e9;
+            background: var(--button-hover);
         }
 
         .luck-button:active {
@@ -205,392 +190,145 @@
         /* 하단 */
         .notice {
             margin-top: 18px;
-
             text-align: center;
-
-            color: #b0b8c1;
+            color: var(--notice-color);
             font-size: 13px;
         }
 
-        /* =========================
-           색종이 효과
-        ========================= */
-
+        /* 색종이 효과 */
         .confetti {
             position: fixed;
-
             width: 8px;
             height: 14px;
-
             top: -20px;
-
             pointer-events: none;
             z-index: 1000;
-
             animation: confettiFall linear forwards;
         }
 
         @keyframes confettiFall {
-
-            0% {
-                transform:
-                    translate3d(0, 0, 0)
-                    rotate(0deg);
-
-                opacity: 1;
-            }
-
-            100% {
-                transform:
-                    translate3d(
-                        var(--move-x),
-                        110vh,
-                        0
-                    )
-                    rotate(720deg);
-
-                opacity: 0;
-            }
+            0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate3d(var(--move-x), 110vh, 0) rotate(720deg); opacity: 0; }
         }
 
-
-        /* =========================
-           모바일
-        ========================= */
-
+        /* 모바일 */
         @media (max-width: 480px) {
-
-            .app {
-                padding: 16px;
-                align-items: flex-start;
-                padding-top: 40px;
-            }
-
-            .card {
-                padding: 32px 22px 28px;
-                border-radius: 24px;
-            }
-
-            h1 {
-                font-size: 28px;
-            }
-
-            .description {
-                font-size: 15px;
-            }
-
-            .numbers {
-                gap: 8px;
-            }
-
-            .ball {
-                width: 50px;
-                height: 50px;
-                border-radius: 15px;
-                font-size: 19px;
-            }
+            .app { padding: 16px; align-items: flex-start; padding-top: 40px; }
+            .card { padding: 32px 22px 28px; border-radius: 24px; }
+            h1 { font-size: 28px; }
+            .description { font-size: 15px; }
+            .ball { width: 50px; height: 50px; border-radius: 15px; font-size: 19px; }
         }
     </style>
 </head>
-
-
 <body>
 
 <div class="app">
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 
     <main class="card">
-
-        <!-- 아이콘 -->
-        <div class="icon">
-            🍀
-        </div>
-
-
-        <!-- 제목 -->
-        <h1>
-            오늘의 행운 번호
-        </h1>
-
-
+        <div class="icon">🍀</div>
+        <h1>오늘의 행운 번호</h1>
         <div class="description">
             오늘 하루, 행운을 가져다줄<br>
             번호를 확인해보세요.
         </div>
 
+        <div class="numbers" id="numbers"></div>
+        <div class="message" id="message"></div>
 
-        <!-- 번호 -->
-        <div
-            class="numbers"
-            id="numbers"
-        ></div>
-
-
-        <!-- 메시지 -->
-        <div
-            class="message"
-            id="message"
-        ></div>
-
-
-        <!-- 버튼 -->
-        <button
-            class="luck-button"
-            onclick="generateLotto()"
-        >
+        <button class="luck-button" onclick="generateLotto()">
             행운 번호 확인하기
         </button>
 
-
-        <div class="notice">
-            재미로 즐겨주세요 :)
-        </div>
-
+        <div class="notice">재미로 즐겨주세요 :)</div>
     </main>
-
 </div>
 
-
 <script>
+    // 테마 토글
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
+    }
 
-    /* =========================
-       로또 번호 생성
-    ========================= */
+    // 초기 테마 설정
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.querySelector('.theme-toggle').textContent = '☀️';
+    }
 
     function generateLotto() {
+        const numbersElement = document.getElementById("numbers");
+        const messageElement = document.getElementById("message");
 
-        const numbersElement =
-            document.getElementById("numbers");
-
-        const messageElement =
-            document.getElementById("message");
-
-
-        /* 기존 번호 제거 */
         numbersElement.innerHTML = "";
-
         messageElement.classList.remove("show");
         messageElement.textContent = "";
 
-
-        /* 1 ~ 45 */
         const numbers = [];
-
-        for (let i = 1; i <= 45; i++) {
-            numbers.push(i);
-        }
-
-
-        /* 랜덤하게 섞기 */
+        for (let i = 1; i <= 45; i++) numbers.push(i);
         numbers.sort(() => Math.random() - 0.5);
+        const lotto = numbers.slice(0, 6).sort((a, b) => a - b);
 
-
-        /* 6개 */
-        const lotto =
-            numbers
-                .slice(0, 6)
-                .sort((a, b) => a - b);
-
-
-        /* 번호 출력 */
         lotto.forEach(number => {
-
-            const ball =
-                document.createElement("div");
-
+            const ball = document.createElement("div");
             ball.className = "ball";
-
             ball.textContent = number;
-
             numbersElement.appendChild(ball);
-
         });
 
-
-        /* 색종이 */
         createConfetti();
-
-
-        /* 빵빠레 */
         playFanfare();
 
-
-        /* 행운 메시지 */
         setTimeout(() => {
-
-            messageElement.textContent =
-                "오늘도 행운을 빌어요 🙏";
-
+            messageElement.textContent = "오늘도 행운을 빌어요 🙏";
             messageElement.classList.add("show");
-
         }, 450);
-
     }
-
-
-
-    /* =========================
-       색종이 효과
-    ========================= */
 
     function createConfetti() {
-
-        const colors = [
-            "#3182f6",
-            "#00c471",
-            "#ffb020",
-            "#ff5a5f",
-            "#8b5cf6"
-        ];
-
-
+        const colors = ["#3182f6", "#00c471", "#ffb020", "#ff5a5f", "#8b5cf6"];
         for (let i = 0; i < 130; i++) {
-
-            const confetti =
-                document.createElement("div");
-
-
-            confetti.className =
-                "confetti";
-
-
-            /* 시작 위치 */
-            confetti.style.left =
-                Math.random() * 100 + "vw";
-
-
-            /* 색상 */
-            confetti.style.background =
-                colors[
-                    Math.floor(
-                        Math.random() * colors.length
-                    )
-                ];
-
-
-            /* 랜덤 이동 */
-            confetti.style.setProperty(
-                "--move-x",
-                (Math.random() * 300 - 150) + "px"
-            );
-
-
-            /* 랜덤 크기 */
-            confetti.style.width =
-                Math.random() * 7 + 5 + "px";
-
-            confetti.style.height =
-                Math.random() * 10 + 7 + "px";
-
-
-            /* 랜덤 속도 */
-            confetti.style.animationDuration =
-                Math.random() * 2.5 + 2 + "s";
-
-
-            /* 랜덤 시작 */
-            confetti.style.animationDelay =
-                Math.random() * 0.4 + "s";
-
-
+            const confetti = document.createElement("div");
+            confetti.className = "confetti";
+            confetti.style.left = Math.random() * 100 + "vw";
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.setProperty("--move-x", (Math.random() * 300 - 150) + "px");
+            confetti.style.width = Math.random() * 7 + 5 + "px";
+            confetti.style.height = Math.random() * 10 + 7 + "px";
+            confetti.style.animationDuration = Math.random() * 2.5 + 2 + "s";
+            confetti.style.animationDelay = Math.random() * 0.4 + "s";
             document.body.appendChild(confetti);
-
-
-            /* 삭제 */
-            setTimeout(() => {
-                confetti.remove();
-            }, 5500);
-
+            setTimeout(() => { confetti.remove(); }, 5500);
         }
-
     }
 
-
-
-    /* =========================
-       빵빠레 효과음
-    ========================= */
-
     function playFanfare() {
-
-        const AudioContext =
-            window.AudioContext ||
-            window.webkitAudioContext;
-
-
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!AudioContext) return;
-
-
-        const audio =
-            new AudioContext();
-
-
-        const now =
-            audio.currentTime;
-
-
-        function note(
-            frequency,
-            start,
-            duration
-        ) {
-
-            const oscillator =
-                audio.createOscillator();
-
-            const gain =
-                audio.createGain();
-
-
-            oscillator.type =
-                "triangle";
-
-
-            oscillator.frequency.value =
-                frequency;
-
-
+        const audio = new AudioContext();
+        const now = audio.currentTime;
+        function note(frequency, start, duration) {
+            const oscillator = audio.createOscillator();
+            const gain = audio.createGain();
+            oscillator.type = "triangle";
+            oscillator.frequency.value = frequency;
             oscillator.connect(gain);
-
-            gain.connect(
-                audio.destination
-            );
-
-
-            gain.gain.setValueAtTime(
-                0,
-                start
-            );
-
-
-            gain.gain.linearRampToValueAtTime(
-                0.2,
-                start + 0.02
-            );
-
-
-            gain.gain.exponentialRampToValueAtTime(
-                0.001,
-                start + duration
-            );
-
-
+            gain.connect(audio.destination);
+            gain.gain.setValueAtTime(0, start);
+            gain.gain.linearRampToValueAtTime(0.2, start + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
             oscillator.start(start);
-
-            oscillator.stop(
-                start + duration
-            );
-
+            oscillator.stop(start + duration);
         }
-
-
-        /* 🎺 빵빠레 */
         note(523.25, now, 0.16);
         note(659.25, now + 0.16, 0.16);
         note(783.99, now + 0.32, 0.16);
         note(1046.50, now + 0.48, 0.5);
-
     }
-
 </script>
 
 </body>
