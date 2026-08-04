@@ -200,6 +200,40 @@
             font-size: 13px;
         }
 
+        .contact-form {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--ball-bg);
+        }
+        .contact-form h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--ball-bg);
+            border-radius: 12px;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+        .contact-form textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .contact-form button {
+            width: 100%;
+            padding: 12px;
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         /* 색종이 효과 */
         .confetti {
             position: fixed;
@@ -247,8 +281,19 @@
         </button>
 
         <div class="notice">재미로 즐겨주세요 :)</div>
-    </main>
-</div>
+
+        <div class="contact-form">
+            <h3>제휴 문의</h3>
+            <form action="https://formspree.io/f/mqpzzkrp" method="POST">
+                <input type="text" name="name" placeholder="이름" required>
+                <input type="email" name="email" placeholder="이메일" required>
+                <textarea name="message" placeholder="문의 내용" required></textarea>
+                <button type="submit">보내기</button>
+            </form>
+        </div>
+
+        </main>
+        </div>
 
 <script>
     // 테마 토글
