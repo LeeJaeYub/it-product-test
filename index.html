@@ -441,35 +441,6 @@
     }
 
 
-// Contact form (async) — Formspree
-document.getElementById('contact-form').addEventListener('submit', async function(e){
-    e.preventDefault();
-    const form = e.target;
-    const btn = form.querySelector('button[type="submit"]');
-    const formData = new FormData(form);
-    btn.disabled = true; btn.textContent = '전송 중...';
-    try{
-    const res = await fetch(form.action || 'https://formspree.io/f/mqpzzkrp', {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        });
-        if (res.ok) {
-            form.reset();
-            document.getElementById('contact-success').style.display = 'block';
-        } else {
-            const json = await res.json().catch(()=>({}));
-            alert('전송 실패: ' + (json.error || '서버 오류'));
-        }
-    } catch(err){
-        alert('네트워크 오류: 다시 시도해 주세요.');
-    } finally{
-        btn.disabled = false; btn.textContent = '보내기';
-    }
-});
-
-
-
 <!-- Contact modal -->
 <div id="contact-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
   <div class="modal-content" role="document">
@@ -507,6 +478,37 @@ document.addEventListener('click', function(e){
 });
 // Close on Escape
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') { const m = document.getElementById('contact-modal'); if(m && m.getAttribute('aria-hidden')==='false') closeContactModal(); }});
+
+// Contact form (async) — attach after modal exists
+(function(){
+  const form = document.getElementById('contact-form');
+  if (!form) return;
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    btn.disabled = true; btn.textContent = '전송 중...';
+    try{
+      const res = await fetch(form.action || 'https://formspree.io/f/mqpzzkrp', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res && res.ok) {
+        form.reset();
+        const s = document.getElementById('contact-success'); if(s) s.style.display = 'block';
+        closeContactModal();
+      } else {
+        const json = await (res.json().catch(()=>({}))); 
+        alert('전송 실패: ' + (json.error || '서버 오류'));
+      }
+    } catch(err){
+      alert('네트워크 오류: 다시 시도해 주세요.');
+    } finally{
+      btn.disabled = false; btn.textContent = '보내기';
+    }
+  });
+})();
 
 </script>
 
